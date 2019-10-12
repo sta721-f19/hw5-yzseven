@@ -1,0 +1,101 @@
+\documentclass{article}
+\usepackage{url,hyperref}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,array,comment,eucal}
+\input{macros}
+\usepackage{fullpage}
+
+\begin{document}
+\title{Homework 5: STA 721 Fall19}
+\author{Your Name}
+\date{\today}
+\maketitle
+
+\begin{enumerate}
+  \item Suppose $\Y \sim N(\one_n \beta_0 + \X\b,  \I_n/\phi)$ where $\X^T\one = 0$  i.e. the columns of $\X$ have been centered to have mean $0$, and you are using the $g$-prior for $\b$ specified as follows:
+$$\b \mid  \beta_0, \phi,  g \sim N(0, \frac{g}{\phi} (\X^T\X)^{-1}$$
+where $\X$ is full column rank and  independent Jeffreys priors for
+$\beta_0$ and $\phi$,
+$$p(\beta_0, \phi) = p(\beta_0) p(\phi) \propto 1 \cdot 1/\phi$$
+
+\begin{enumerate}
+  \item   Show that the likelihood function for $\beta_0, \b, \phi$ can be expressed as
+  $${\cal{L}}(\beta_0, \b, \phi) \propto
+\frac{n}{2}\log(\phi) - \frac{\phi}{2} \left(
+  n (\beta_0 - \ybar)^2
++ (\Y_c - \X \bhat)^T(\Y_c - \X \bhat) + (\b - \bhat)^T \X^T\X (\b - \bhat) \right) $$
+where $\Y_c = \Y - \one_n \ybar$. (suggestion: work by Monday)
+
+  \item   Find the posterior distribution of $\beta_0, \b \mid \phi, g$ and $\phi \mid g$.  Simplify so that results are functions of sufficient statistics $\bar{\Y}$, $\bhat$ and \SSE as in notes.  Are $\beta_0$ and $\b$ independent given $\phi$ and $\Y$?  You should state the distributions and their hyperparameters. (suggestion: work by Monday)
+
+  \item Find  $\tilde{\beta} = E_{\beta \mid Y, g}[\beta \mid Y, g]$, the
+  posterior mean under the Zellner $g$-prior from above.  (suggestion: work by Monday)
+
+  \item Find the sampling distribution of $\tilde{\beta}$.  (i.e treating  $\tilde{\beta}$ as a function of $\Y$ given the true parameter, say $\b_T, \phi, \beta_0$  what is the distribution of  $\tilde{\b}$?  (attempt by Monday)
+
+  \item Is the posterior mean under the $g$-prior used here an unbiased estimator of $\b_T$.  If not, what is the bias?
+
+  \item \label{ex:loss} Using the sampling distribution of the data, calculate the expected loss  for using the posterior mean to estimate $\b$ under squared error lossL
+  $$\E_{\Y \mid \beta_0, \b, \phi, g}[ \|| \tilde{\b} - \b \||^2]$$
+  {\em Hint: recall theorem regarding expectations of quadratic forms}
+
+  \item \label{ex:GM}The Gauss-Markov Theorem showed that out of the class of unbiased linear estimators that the MLE (OLS) estimator had the smallest variance.  If we use the posterior mean, $ \tilde{\b}$ as an estimator for $\b$, can the posterior mean have a smaller expected loss than the MLE for estimating $\b$?  Can it be worse?  Make a plot  to illustrate with $g/(1+g)$ on the x-axis and MSE (expected loss) on the y-axis for the Bayes estimator (posterior mean).  You may need to assume or fix values for some quantities that go into the loss, if so how sensitive are the plots/conclusions to those assumptions?)
+
+  \item \label{ex:min} Find a value of $g$ that minimizes the expected MSE of the Bayes estimator.  Add this point to the graph above.  With this value for $g$ will the expected MSE with the Bayes estimator always be smaller that the expected  MSE under the MLE/OLS estimator (Bayes with independent Jeffreys)?  If this depends on unknown parameters, describe how you might estimate $g$.
+
+\item Repeat \ref{ex:loss}, but now consider estimation of $\mub = \one_n \beta_0 + \X \b$.
+
+\item Repeat \ref{ex:GM}, but now consider estimation of $\mub = \one_n \beta_0 + \X \b$.
+
+\item Repeat \ref{ex:min}, but now consider estimation of $\mub = \one_n \beta_0 + \X \b$.
+
+\item Does the optimal choice for $g$ depend on whether you are estimating $\b$ or $\mub$?
+
+\end{enumerate}
+
+\item  If $\tau = 1/g \sim G(1/2, n/2)$, find the marginal prior for $\b \mid \phi, \beta_0$.
+
+\item Derive the conditional posterior distribution of $\tau \mid \beta_0, \beta, \phi, \Y$.  {\em Use the likelihood decomposition above}
+
+\item  Refer to the Prostate data from HW4 and the model {\tt lcavol $\sim$ 1 + factor(Gleason)},
+
+\begin{enumerate}
+  \item  Obtain  95\% credible intervals analytically (i.e. using the appropriate t-distributions) for the 4 group means with the g-prior  with $g=n$ for $\b \mid \phi, \beta_0$ (with centered $\X$) and calculate for the data.
+
+  \item   Use JAGS and an approximation to the independent Jeffreys prior $p(\beta_0, \phi) \propto 1/\phi$, to  obtain 95\% credible intervals for the 4 group means using MCMC based on your distributions above under the  g-prior  with $g=n$ for $\b \mid \phi, \beta_0$ (with centered $\X$).  Use the multivariate normal distribution in JAGS and remember jags specifies normal distributions using precisions rather than variances.  (Try before Wednesday).   Your results should be close to the non-simulation based solutions above.
+
+\item  Extend the JAGS code to use a mixture of the g-prior by adding that $\tau = 1/g \sim G(1/2, n/2)$.
+
+\item Find the Student-t distribution for $\b \mid \phi$ by integrating out $\tau$. Use the ({\tt dmt} in the JAGS code instead of the multivariate normal g-prior.   Are you intervals comparable to those above?  (if code is correct they should agree)
+
+\item   Will your results above be the same if you change the baseline category?  Explain.
+
+
+\end{enumerate}
+
+
+\item (Optional Challenge)   If $W_1$ and $W_2$ have a joint multivariate normal distribution with
+
+$$
+ \left[\begin{array}{l} W_1 \cr W_2  \end{array} \right] \sim N \left( \left[\begin{array}{l} \mu_1 \cr \mu_2  \end{array} \right],   \left[\begin{array}{l} \Sigma_{11} & \Sigma_{21} \cr \Sigma_{21} & \Sigma_{22} \end{array} \right] \right)$$
+
+then the conditional distribution of $W_1$ given $W_2$ is
+$$W_1 \mid W_2 = w_2 \sim N(\mu_1 + \Sigma_{12} \Sigma_{22}^-(w_2 - \mu_2), \Sigma_{11} - \Sigma_{12} \Sigma_{22}^- \Sigma_{21})$$
+where $\Sigma_{22}^-$ is a generalized inverse of $\Sigma_{22}$.
+Suppose that for the model $\Y = \X\beta + \eps$ with $\eps \sim \N(\zero, \sigma^2 \I_n)$ we use a  $g$-prior for $\b$ with a generalized inverse  $$\b \mid \phi \sim \N(\zero, g/\phi (\X^T\X)^-).$$
+
+\begin{enumerate}
+  \item Find the joint (normal) distribution of $\Y$ and $\b$ given $\phi$.
+
+  \item Use the result about conditional normals above to find the posterior distribution of $\b$ given $\phi$.   If $\X$ is full rank do you obtain the same results based on using densities to derive the  posterior distribution?  Rearrange until you do!  Does this suggest an alternative representation in the case of the non-full rank case?
+
+  \item Find the posterior distribution of $\mub = \X \b$ given $\phi$.   Does the latter depend on the choice of generalized inverse?  (Express the result as a function of $\P_\X$)
+
+\end{enumerate}
+
+
+
+\end{enumerate} % end of problems
+
+
+\end{document}
